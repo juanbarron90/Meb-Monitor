@@ -2,10 +2,14 @@ import { useState, useEffect, useRef } from "react";
 
 // ── MEB Engine ────────────────────────────────────────────────────────────────
 function calcularH(s, l, t, d) {
-  const hBruta = Math.pow(s * l, t) - d;
-  const hMax = Math.pow(100, t);
-  return Math.max(0, Math.min(10, (hBruta / hMax) * 10));
+  // S: carga sensorial (0-10), L: capacidad patrón (0-10)
+  // T: modulación atencional (0.5-2), D: costo social (0-10)
+  const capacidad = (1 - (s / 10) * 0.5) * (l / 10);
+  const capacidadMod = Math.min(1, capacidad * t);
+  const h = Math.max(0, capacidadMod - (d / 10) * 0.35);
+  return parseFloat((h * 10).toFixed(2));
 }
+
 function getEstado(h, modo) {
   if (modo === "explorador") {
     if (h >= 7) return { label: "¡Súper bien!",     color: "#4ade80", fondo: "#052e16", personaje: "🦋", mensaje: "Tu cerebro está volando alto. ¡Protege este momento!" };
@@ -302,10 +306,13 @@ function Cuestionario({ modo, onComplete }) {
       const sMod   = r.cuerpo  ?? 0;
       const sTotal = Math.min(10, Math.max(0, sBase + sMod));
       const tVal   = r.foco    ?? 1.0;
-      const dBase  = r.gente   ?? r.social ?? 20;
+
+      // D en escala 0-10, proporcional al resto del modelo
+      // gente/social tiene valores 5, 25, 55, 85 → normalizar a 0-10
+      const dBase  = ((r.gente ?? r.social ?? 25) / 100) * 6; // 0–6
       const dRaw   = r.termometro ?? r.estres ?? 3;
-      const dMod   = dRaw * 5;
-      const dTotal = Math.min(100, dBase + dMod);
+      const dMod   = (dRaw / 10) * 4; // 0–4
+      const dTotal = Math.min(10, dBase + dMod); // máximo 10
       onComplete({ s: sTotal, l: 7.5, t: tVal, d: dTotal });
     }
   };
