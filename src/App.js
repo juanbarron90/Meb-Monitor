@@ -170,32 +170,6 @@ function GaugeKids({ value, estado }) {
   );
 }
 
-function GaugeJoven({ value, estado }) {
-  const r = 82, cx = 102, cy = 102;
-  const circum = 2 * Math.PI * r;
-  const arc = (value / 10) * circum * 0.75;
-  return (
-    <svg width="204" height="204" viewBox="0 0 204 204"
-      style={{ filter:`drop-shadow(0 0 18px ${estado.color}44)` }}>
-      <circle cx={cx} cy={cy} r={r} fill="none" stroke="#ffffff08" strokeWidth="13"
-        strokeDasharray={`${circum*0.75} ${circum*0.25}`} strokeLinecap="round"
-        transform={`rotate(135 ${cx} ${cy})`} />
-      <circle cx={cx} cy={cy} r={r} fill="none" stroke={estado.color} strokeWidth="13"
-        strokeDasharray={`${arc} ${circum-arc}`} strokeDashoffset={circum*0.25}
-        strokeLinecap="round" transform={`rotate(135 ${cx} ${cy})`}
-        style={{ transition:"stroke-dasharray 1s cubic-bezier(0.4,0,0.2,1), stroke 0.6s" }} />
-      <text x={cx} y={cy-2} textAnchor="middle" fill={estado.color}
-        style={{ fontFamily:"'Nunito',sans-serif", fontSize:38, fontWeight:800, transition:"fill 0.5s" }}>
-        {value.toFixed(1)}
-      </text>
-      <text x={cx} y={cy+20} textAnchor="middle" fill={estado.color+"bb"}
-        style={{ fontFamily:"'Nunito',sans-serif", fontSize:13, fontWeight:700 }}>
-        {estado.label}
-      </text>
-    </svg>
-  );
-}
-
 // ── Termómetro interactivo ─────────────────────────────────────────────────────
 function Termometro({ value, onChange }) {
   const niveles = [
